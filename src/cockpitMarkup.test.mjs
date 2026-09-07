@@ -721,7 +721,7 @@ test('cockpit summary presents the focused item as Contact', () => {
   );
   assert.ok(match, 'cockpit Contact summary is missing');
   assert.match(match[0], /aria-label="Contact cockpit summary"/);
-  assert.match(match[0], /class="cockpit-context-kicker">CONTACT</);
+  assert.match(match[0], /class="cockpit-context-kicker"[^>]*>CONTACT</);
   assert.match(match[0], /aria-label="Contact navigation"/);
   assert.match(match[0], /aria-label="Previous — prior visited contact in the 250 km window"/);
   assert.match(match[0], /aria-label="Next — nearest unvisited contact in the 250 km window"/);

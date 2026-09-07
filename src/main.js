@@ -6,6 +6,7 @@ import flightsLayer from './data/flights.js';
 import militaryFlightsLayer from './data/militaryFlights.js';
 import earthquakesLayer from './data/earthquakes.js';
 import bmkgEarthquakesLayer from './data/bmkgEarthquakes.js';
+import cctvHeatmapLayer from './data/cctvHeatmap.js';
 import satellitesLayer from './data/satellites.js';
 import rocketLaunchesLayer from './data/rocketLaunches.js';
 import trafficLayer from './data/traffic.js';
@@ -24,6 +25,7 @@ import { MapStackController } from './mapStackController.js';
 import { initAnnotations } from './annotations/index.js';
 import { initLogoGaze } from './logoGaze.js';
 import { initCockpitCloudEffects } from './cockpitCloudEffects.js';
+import { initI18n, setLocale, getLocale, SUPPORTED_LOCALES, translatePage } from './i18n.js';
 import {
   installRenderGovernor,
   getRenderGovernorDiagnostics,
@@ -37,6 +39,7 @@ import { initKeySetup } from './keySetup.js';
 import { loadPhotorealisticTileset } from './mapStartup.js';
 
 initLogoGaze();
+initI18n();
 
 /**
  * Extract a human-readable error message from any thrown value.
@@ -212,6 +215,7 @@ async function init() {
     dataManager.register(militaryFlightsLayer);
     dataManager.register(earthquakesLayer);
     dataManager.register(bmkgEarthquakesLayer);
+    dataManager.register(cctvHeatmapLayer);
     dataManager.register(satellitesLayer);
     dataManager.register(rocketLaunchesLayer);
     rocketLaunchesLayer.attachDataManager(dataManager);
@@ -329,6 +333,23 @@ async function init() {
       requestRender: governorRequestRender,
     };
     window.__godsEyeView.voiceCommands = initGevVoiceCommands({ viewer, styleManager, dataManager, sceneDirector, annotations });
+
+    // ── Locale toggle ──────────────────────────────────────────────
+    {
+      const btn = document.getElementById('locale-toggle-btn');
+      if (btn) {
+        const apply = () => {
+          const cur = getLocale();
+          const next = cur === 'en' ? 'id' : 'en';
+          setLocale(next);
+          translatePage();
+          btn.textContent = next.toUpperCase();
+        };
+        btn.addEventListener('click', apply);
+        // Init button label from stored/preferred locale
+        btn.textContent = getLocale().toUpperCase();
+      }
+    }
 
   } catch (error) {
     console.error("God's Eye View initialization failed:", error);

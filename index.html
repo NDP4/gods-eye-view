@@ -26,37 +26,38 @@
   <div id="title-bar">
     <div class="title-glow"></div>
     <h1><span class="title-logo brand-logo" data-logo-gaze data-logo-src="/logo.svg" aria-hidden="true"><img src="/logo.svg" alt="" /></span> <span>GOD'S EYE <span class="title-accent">VIEW</span></span></h1>
-    <p class="subtitle">NO PLACE LEFT BEHIND</p>
+    <p class="subtitle" data-i18n="app_subtitle">NO PLACE LEFT BEHIND</p>
   </div>
 
   <!-- Style indicator -->
   <div id="style-indicator">
-    <span class="indicator-label">ACTIVE STYLE</span>
+    <span class="indicator-label" data-i18n="active_style">ACTIVE STYLE</span>
     <span class="indicator-value" id="active-style-name">NORMAL</span>
   </div>
 
   <!-- Top-center camera and share actions -->
-  <nav id="top-center-actions" aria-label="Globe actions">
-    <button id="clear-selected-layers" type="button" aria-label="Clear selected data layers" title="Turn off all selected data layers">
+  <nav id="top-center-actions" aria-label="Globe actions" data-i18n-aria="globe_actions">
+    <button id="clear-selected-layers" type="button" aria-label="Clear selected data layers" data-i18n-aria="clear_selected_layers" title="Turn off all selected data layers" data-i18n-title="clear_selected_layers">
       <span class="material-symbols-outlined" aria-hidden="true">layers_clear</span>
     </button>
-    <button id="share-btn" type="button" aria-label="Copy share link" title="Copy share link">
+    <button id="share-btn" type="button" aria-label="Copy share link" data-i18n-aria="copy_share_link" title="Copy share link" data-i18n-title="copy_share_link">
       <span class="share-icon" aria-hidden="true">&#x1F517;</span>
     </button>
-    <button id="reset-globe-view" type="button" aria-label="Reset to full globe view" title="Reset camera and return to full globe view">
+    <button id="reset-globe-view" type="button" aria-label="Reset to full globe view" data-i18n-aria="reset_globe_view" title="Reset camera and return to full globe view" data-i18n-title="reset_globe_view">
       <span class="material-symbols-outlined" aria-hidden="true">public</span>
     </button>
+    <button id="locale-toggle-btn" type="button" aria-label="Toggle language" title="Switch language (EN/ID)" style="margin-left: 6px; background: rgba(0,0,0,0.6); border: 1px solid rgba(0,255,204,0.3); color: #0ff; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-family: monospace;">EN/ID</button>
   </nav>
   <div id="global-loading-status" role="status" aria-live="polite" aria-atomic="true" hidden>
-    <span id="global-loading-label">LOADING LIVE DATA</span>
+    <span id="global-loading-label" data-i18n="loading_live_data">LOADING LIVE DATA</span>
     <span id="global-loading-detail"></span>
   </div>
   <div id="traffic-sync-chip" aria-live="polite">
-    <span id="traffic-sync-label">syncing road network</span>
+    <span id="traffic-sync-label" data-i18n="syncing_road_network">syncing road network</span>
     <span id="traffic-sync-progress">0%</span>
   </div>
   <div id="cctv-sync-chip" aria-live="polite">
-    <span id="cctv-sync-label">loading frames</span>
+    <span id="cctv-sync-label" data-i18n="loading_frames">loading frames</span>
     <span id="cctv-sync-progress">0/0</span>
   </div>
 
@@ -138,9 +139,9 @@
     </div>
     <div class="cockpit-topline">
       <div>
-        <span class="cockpit-kicker">FIRST PERSON</span>
-        <strong id="cockpit-callsign">AIRCRAFT</strong>
-        <span id="cockpit-aircraft-meta" class="cockpit-aircraft-meta">LIVE TRACK · COURSE ALIGNED</span>
+        <span class="cockpit-kicker" data-i18n="first_person">FIRST PERSON</span>
+        <strong id="cockpit-callsign" data-i18n="aircraft">AIRCRAFT</strong>
+        <span id="cockpit-aircraft-meta" class="cockpit-aircraft-meta" data-i18n="feed_aligned">LIVE TRACK · COURSE ALIGNED</span>
       </div>
       <div class="cockpit-vision-controls" role="group" aria-label="Cockpit vision style">
         <button id="cockpit-vision-previous" class="cockpit-vision-nav" type="button" aria-label="Previous cockpit vision style" title="Previous vision style">
@@ -161,15 +162,15 @@
     <div class="cockpit-compass" aria-label="Current aircraft heading">
       <div class="cockpit-instrument-row">
         <div class="cockpit-readout cockpit-speed">
-          <span class="cockpit-readout-label">GROUND SPEED</span>
+          <span class="cockpit-readout-label" data-i18n="ground_speed">GROUND SPEED</span>
           <strong id="cockpit-speed-value">---</strong>
-          <span class="cockpit-readout-unit">KTS</span>
+          <span class="cockpit-readout-unit" data-i18n="kts">KTS</span>
         </div>
         <div class="cockpit-heading-value"><span id="cockpit-heading-value">---</span><small>°</small></div>
         <div class="cockpit-readout cockpit-altitude">
-          <span class="cockpit-readout-label">ALTITUDE</span>
+          <span class="cockpit-readout-label" data-i18n="altitude">ALTITUDE</span>
           <strong id="cockpit-altitude-value">-----</strong>
-          <span class="cockpit-readout-unit">FT</span>
+          <span class="cockpit-readout-unit" data-i18n="ft">FT</span>
         </div>
       </div>
       <span class="cockpit-heading-caret material-symbols-outlined" aria-hidden="true">arrow_drop_down</span>
@@ -182,7 +183,7 @@
     <aside id="cockpit-context" class="cockpit-context-window" aria-label="Contact cockpit summary" hidden>
       <header class="cockpit-context-header">
         <div>
-          <span class="cockpit-context-kicker">CONTACT</span>
+          <span class="cockpit-context-kicker" data-i18n="contact">CONTACT</span>
           <strong id="cockpit-context-subject">CONTACTS · 250 KM</strong>
         </div>
         <nav class="cockpit-context-actions" aria-label="Contact navigation">
@@ -196,7 +197,7 @@
             <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
           </button>
         </nav>
-        <span class="cockpit-context-qualifier">CONTEXT ONLY</span>
+        <span class="cockpit-context-qualifier" data-i18n="context_only">CONTEXT ONLY</span>
       </header>
       <div class="cockpit-context-cohorts" role="list" aria-label="Nearby cohort counts">
         <div role="listitem" data-context-cohort="flights"><span>FLT</span><strong>—</strong><small>OpenSky</small></div>
@@ -232,7 +233,7 @@
     <aside id="cockpit-signal-stream" class="cockpit-signal-window" aria-label="Cockpit briefing carousel" hidden>
       <section id="cockpit-route" class="cockpit-route-card" aria-label="Estimated flight plan" hidden>
         <div class="cockpit-route-heading">
-          <span class="cockpit-route-kicker">ESTIMATED FLIGHT PLAN</span>
+          <span class="cockpit-route-kicker" data-i18n="estimated_flight_plan">ESTIMATED FLIGHT PLAN</span>
           <small id="cockpit-route-status">ROUTE DATA UNAVAILABLE</small>
         </div>
         <div class="cockpit-route-endpoints">
@@ -277,7 +278,7 @@
           <ol id="cockpit-signal-list" class="cockpit-signal-list" aria-live="polite"></ol>
         </section>
         <section data-cockpit-brief-page="news" aria-label="Latest regional news" hidden>
-          <div id="cockpit-news-status" class="cockpit-brief-status">ACQUIRING REGIONAL NEWS</div>
+          <div id="cockpit-news-status" class="cockpit-brief-status" data-i18n="acquiring_regional_news">ACQUIRING REGIONAL NEWS</div>
           <ol id="cockpit-news-list" class="cockpit-news-list" aria-live="polite"></ol>
         </section>
         <section data-cockpit-brief-page="local" aria-label="Location-based information" hidden>
@@ -579,9 +580,9 @@
     <div class="panel-glow"></div>
     <div class="data-panel-inner">
       <div class="panel-header">
-        <span class="panel-title">DATA LAYERS</span>
+        <span class="panel-title" data-i18n="data_layers">DATA LAYERS</span>
         <span class="panel-divider"></span>
-        <button class="panel-collapse-btn" data-collapse-target="data-panel" title="Collapse panel">+</button>
+        <button class="panel-collapse-btn" data-collapse-target="data-panel" title="Collapse panel" data-i18n-title="collapse_panel">+</button>
       </div>
       <div id="data-toggles" class="data-toggle-list"></div>
     </div>
@@ -592,9 +593,9 @@
     <div class="panel-glow"></div>
     <div class="cctv-panel-inner">
       <div class="panel-header">
-        <span class="panel-title">CCTV</span>
+        <span class="panel-title" data-i18n="cctv">CCTV</span>
         <span class="panel-divider"></span>
-        <button class="panel-collapse-btn" data-collapse-target="cctv-panel" title="Collapse panel">+</button>
+        <button class="panel-collapse-btn" data-collapse-target="cctv-panel" title="Collapse panel" data-i18n-title="collapse_panel">+</button>
       </div>
       <div id="cctv-frame-wrap" class="cctv-frame-wrap">
         <img id="cctv-frame" alt="CCTV feed frame" />
@@ -648,9 +649,9 @@
     <div class="panel-glow"></div>
     <div class="scene-panel-inner">
       <div class="panel-header">
-        <span class="panel-title">SCENES</span>
+        <span class="panel-title" data-i18n="scenes">SCENES</span>
         <span class="panel-divider"></span>
-        <button class="panel-collapse-btn" data-collapse-target="scene-panel" title="Collapse panel">+</button>
+        <button class="panel-collapse-btn" data-collapse-target="scene-panel" title="Collapse panel" data-i18n-title="collapse_panel">+</button>
       </div>
       <div class="scene-controls">
         <select id="scene-select" aria-label="Scene recipe"></select>
