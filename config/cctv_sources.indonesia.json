@@ -78714,24 +78714,6 @@
     "license": "ATCS Banjarmasin (name only - real stream via https://banjarmasinkota.go.id/)"
   },
   {
-    "id": "bukittinggi-0001",
-    "name": "Lompat ke konten utama",
-    "city": "Bukittinggi",
-    "provider": "ATCS Bukittinggi",
-    "sourceKind": "pilot",
-    "feedType": "hls",
-    "url": "https://cctv.bukittinggikota.go.id/#cam-1",
-    "lat": -0.3049,
-    "lon": 100.3703,
-    "headingDeg": 0,
-    "pitchDeg": -15,
-    "fovDeg": 66,
-    "rangeM": 500,
-    "mountHeightM": 8,
-    "groundElevationM": 900,
-    "license": "ATCS Bukittinggi (name only - real stream via https://cctv.bukittinggikota.go.id/)"
-  },
-  {
     "id": "bukittinggi-0026",
     "name": "Ruang Publik",
     "city": "Bukittinggi",
