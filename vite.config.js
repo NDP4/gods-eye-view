@@ -4663,6 +4663,29 @@ function cctvProxy() {
               return;
             }
 
+            // For Indonesian cameras (and any direct-URL source), return a redirect to
+            // the upstream URL so the BROWSER fetches the stream directly. The Vite dev
+            // proxy can be unreliable on slow public feeds (timeouts, range issues);
+            // the user's browser has direct connectivity to the city CCTV servers.
+            const bypassProxy = String(process.env.CCTV_PROXY_BYPASS || '0').trim() === '1'
+              || String(mediaUrl).includes('balitower')
+              || String(mediaUrl).includes('pelindung.bandung')
+              || String(mediaUrl).includes('cctvjss.jogjakota')
+              || String(mediaUrl).includes('pantausemar')
+              || String(mediaUrl).includes('atcs.denpasarkota')
+              || String(mediaUrl).includes('atcs.tasikmalayakota')
+              || String(mediaUrl).includes('cctv.bukittinggikota')
+              || String(mediaUrl).includes('streamcctv.padang')
+              || String(mediaUrl).includes('live.banyuwangikab')
+              || String(mediaUrl).includes('cctvkanjeng.gresikkab')
+              || String(mediaUrl).includes('atcs.bandungbaratkab')
+              || String(mediaUrl).includes('atcs.ciamiskab');
+            if (bypassProxy) {
+              res.writeHead(302, { Location: mediaUrl, 'Cache-Control': 'no-store' });
+              res.end();
+              return;
+            }
+
             try {
               const upstreamHeaders = { 'User-Agent': 'gods-eye-view-cctv-proxy/1.0' };
               const requestRange = req.headers?.range;
