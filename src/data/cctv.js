@@ -46,6 +46,7 @@
  * plus CCTV-specific methods (selectCamera, cycleCamera, focusNearest, etc.).
  */
 import * as Cesium from 'cesium';
+import Hls from 'hls.js';
 import { registerSpriteCollection, restoreSpriteOrder } from './spriteOrder.js';
 import {
   CCTV_ACTIVATION_RESULT,
@@ -1719,7 +1720,30 @@ function createProjectionRuntime(record) {
     video.playsInline = true;
     video.crossOrigin = 'anonymous';
     video.preload = 'auto';
-    video.src = mediaUrlFor(record.camera);
+    const mediaUrl = mediaUrlFor(record.camera);
+    const isHls = /\.m3u8(\?|$)/i.test(mediaUrl) || /application\/vnd\.apple\.mpegurl/i.test(record.camera?.feedType || '');
+    // Native HLS only on Safari; everywhere else use hls.js to feed the video element
+    if (isHls && !video.canPlayType('application/vnd.apple.mpegurl')) {
+      try {
+        if (Hls.isSupported()) {
+          const hls = new Hls({ enableWorker: true, lowLatencyMode: true });
+          hls.loadSource(mediaUrl);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.ERROR, (_e, data) => {
+            if (data?.fatal) {
+              try { hls.destroy(); } catch {}
+            }
+          });
+          runtime.hls = hls;
+        } else {
+          video.src = mediaUrl;
+        }
+      } catch {
+        video.src = mediaUrl;
+      }
+    } else {
+      video.src = mediaUrl;
+    }
     video.addEventListener('canplay', () => {
       video.play().catch(() => {});
     });
@@ -1780,6 +1804,10 @@ function ensureProjectionRuntime(record) {
  */
 function destroyProjectionRuntime(runtime) {
   if (!runtime) return;
+  if (runtime.hls) {
+    try { runtime.hls.destroy(); } catch {}
+    runtime.hls = null;
+  }
   if (runtime.video) {
     runtime.video.pause();
     runtime.video.removeAttribute('src');
