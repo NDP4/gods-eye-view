@@ -2345,6 +2345,8 @@ export class StyleManager {
     this._cctvCalibSaveBtn = document.getElementById('cctv-calib-save-btn');
     this._cctvCalibResetBtn = document.getElementById('cctv-calib-reset-btn');
     this._cctvFrame = document.getElementById('cctv-frame');
+    this._cctvVideo = document.getElementById('cctv-video');
+    this._cctvHlsInstance = null;
     this._cctvFrameWrap = document.getElementById('cctv-frame-wrap');
     this._cctvFrameRequestToken = 0;
     this._cctvFramePreloader = null;
@@ -6242,12 +6244,21 @@ export class StyleManager {
     this._cctvFrameRequestToken += 1;
     this._cctvFramePreloader = null;
     if (this._cctvFrame) {
+      this._cctvFrame.style.display = 'none';
       this._cctvFrame.classList.remove('active');
       this._cctvFrame.removeAttribute('src');
       this._cctvFrame.dataset.cameraId = '';
       this._cctvFrame.dataset.currentSrc = '';
       this._cctvFrame.dataset.loading = '';
       this._cctvFrame.dataset.error = '';
+    }
+    if (this._cctvVideo) {
+      this._cctvVideo.style.display = 'none';
+      this._cctvVideo.src = '';
+    }
+    if (this._cctvHlsInstance) {
+      try { this._cctvHlsInstance.destroy(); } catch {}
+      this._cctvHlsInstance = null;
     }
     this._cctvFrameWrap?.classList.remove('loading', 'has-frame');
   }
@@ -6271,12 +6282,61 @@ export class StyleManager {
    * @param {boolean} cameraChanged
    * @returns {void}
    */
-  _queueCctvFrame(src, cameraId, cameraChanged) {
+  _queueCctvFrame(src, cameraId, feedType, cameraChanged) {
     if (!this._cctvFrame || !src) return;
+    // HLS feeds (mp4/hls/webm) play via <video> + hls.js; image feeds via <img>
+    const isVideoFeed = feedType === 'hls' || feedType === 'mp4' || feedType === 'webm';
+    if (isVideoFeed) {
+      this._loadCctvVideoHls(cameraId, feedType, cameraChanged);
+      return;
+    }
+    this._loadCctvImageFrame(src, cameraId, cameraChanged);
+  }
 
+  _loadCctvVideoHls(cameraId, feedType, cameraChanged) {
     if (cameraChanged) {
-      // A different camera gets an honest acquisition state. Never retain
-      // the prior camera's pixels under the newly selected metadata.
+      this._cctvFrame.style.display = 'none';
+      if (this._cctvHlsInstance) {
+        try { this._cctvHlsInstance.destroy(); } catch {}
+        this._cctvHlsInstance = null;
+      }
+      this._cctvVideo.src = '';
+    }
+    const video = this._cctvVideo;
+    video.style.display = 'block';
+    video.muted = true;
+    video.autoplay = true;
+    const mediaSrc = `/api/cctv/media/${encodeURIComponent(cameraId)}`;
+    const isNativeHls = video.canPlayType('application/vnd.apple.mpegurl');
+    if (isNativeHls) {
+      video.src = mediaSrc;
+    } else {
+      try {
+        const Hls = window._hlsConstructor;
+        if (Hls && Hls.isSupported()) {
+          if (this._cctvHlsInstance) { try { this._cctvHlsInstance.destroy(); } catch {} }
+          const hls = new Hls({ enableWorker: true, lowLatencyMode: false });
+          hls.loadSource(mediaSrc);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.ERROR, () => {});
+          this._cctvHlsInstance = hls;
+        } else {
+          video.src = mediaSrc;
+        }
+      } catch {
+        video.src = mediaSrc;
+      }
+    }
+    video.oncanplay = () => { video.play().catch(() => {}); };
+  }
+
+  _loadCctvImageFrame(src, cameraId, cameraChanged) {
+    this._cctvVideo.style.display = 'none';
+    if (this._cctvHlsInstance) {
+      try { this._cctvHlsInstance.destroy(); } catch {}
+      this._cctvHlsInstance = null;
+    }
+    if (cameraChanged) {
       this._cctvFrame.classList.remove('active');
       this._cctvFrame.removeAttribute('src');
       this._cctvFrameWrap?.classList.remove('has-frame');
@@ -6636,14 +6696,11 @@ export class StyleManager {
     if (this._cctvFrame) {
       const nextSrc = enabled ? activeCamera?.frameUrl : null;
       const nextCameraId = enabled ? (activeCamera?.id || '') : '';
+      const nextFeedType = enabled ? (activeCamera?.feedType || 'image') : 'image';
       const cameraChanged = this._cctvFrame.dataset.cameraId !== nextCameraId;
       const frameLoading = this._cctvFrame.dataset.loading === 'true';
-      // A same-camera refresh waits for the current image to settle. Replacing
-      // src every 10 seconds can cancel a slow but healthy decode forever and
-      // leave SNAPSHOT · OK beside a blank/loading preview. Camera changes are
-      // immediate so navigation never waits on the prior camera's request.
       if (nextSrc && (cameraChanged || (!frameLoading && this._cctvFrame.dataset.currentSrc !== nextSrc))) {
-        this._queueCctvFrame(nextSrc, nextCameraId, cameraChanged);
+        this._queueCctvFrame(nextSrc, nextCameraId, nextFeedType, cameraChanged);
       }
       if (!nextSrc) {
         this._clearCctvFrame();

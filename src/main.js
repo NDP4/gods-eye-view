@@ -1,4 +1,6 @@
 import * as Cesium from 'cesium';
+import Hls from 'hls.js';
+window._hlsConstructor = Hls;
 import { StyleManager } from './ui.js';
 import { flyToAustin } from './camera.js';
 import { DataLayerManager } from './data/manager.js';
